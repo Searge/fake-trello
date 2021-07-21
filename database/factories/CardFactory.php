@@ -22,7 +22,8 @@ class CardFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->unique()->word(),
+            'desk_list_id' => rand(1, 20),
         ];
     }
 }
