@@ -8,6 +8,7 @@ Vue.use(VueRouter);
 import App from './components/App';
 import Home from './components/Home';
 import Desks from './components/desks/Desks';
+import ShowDesk from './components/desks/ShowDesk';
 
 const router = new VueRouter({
   mode: 'history',
@@ -22,11 +23,17 @@ const router = new VueRouter({
       name: 'desks',
       component: Desks,
     },
+    {
+      path: '/desks/:deskId',
+      name: 'showDesk',
+      component: ShowDesk,
+      props: true,
+    },
   ],
 });
 
 const app = new Vue({
   el: '#app',
-  components: {App},
-  router
+  components: { App },
+  router,
 });

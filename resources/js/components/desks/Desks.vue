@@ -6,9 +6,12 @@
         <div class="row">
             <div class="col-lg-4" v-for="desk in desks" v-bind:key="desk.id">
                 <div class="card mt-3">
-                    <a class="card-body" href="#">
-                        <h5 class="card-title">{{ desk.name }}</h5>
-                    </a>
+                    <router-link
+                        class="card-body"
+                        :to="{ name: 'showDesk', params: { deskId: desk.id } }"
+                    >
+                        <h4 class="card-title">{{ desk.name }}</h4>
+                    </router-link>
                 </div>
             </div>
         </div>
