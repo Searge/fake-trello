@@ -2,11 +2,19 @@
     <div class="continer">
         <div class="form-group">
             <input
-                class="form-control"
                 type="text"
                 @blur="saveName"
                 v-model="name"
+                class="form-control"
+                :class="{ 'is-invalid': $v.name.$error }"
             />
+            <div class="invalid-feedback" v-if="!$v.name.required">
+                Field is required
+            </div>
+            <div class="invalid-feedback" v-if="!$v.name.maxLength.max">
+                Name must have at least
+                {{ $v.name.$params.maxLength.max }} letters.
+            </div>
         </div>
         <div class="alert alert-danger" role="alert" v-if="errored">
             Data request error.
@@ -20,6 +28,7 @@
 </template>
 
 <script>
+import { required, maxLength } from 'vuelidate/lib/validators';
 export default {
     props: ['deskId'],
     data() {
@@ -31,6 +40,10 @@ export default {
     },
     methods: {
         saveName() {
+            this.$v.$touch();
+            if (this.$v.$anyError) {
+                return;
+            }
             axios
                 .post('/api/v1/desks/' + this.deskId, {
                     _method: 'PUT',
@@ -61,6 +74,12 @@ export default {
             .finally(() => {
                 this.loading = false;
             });
+    },
+    validations: {
+        name: {
+            required,
+            maxLength: maxLength(64),
+        },
     },
 };
 </script>
