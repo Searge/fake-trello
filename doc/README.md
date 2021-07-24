@@ -2,6 +2,6 @@
 
 ![Latest Snapshot](img/snapshot--latest.png)
 
-## Realize notes
+## Release notes
 
 Made database integration and first frontend iterations.
