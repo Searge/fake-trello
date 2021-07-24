@@ -12,6 +12,7 @@
                     >
                         <h4 class="card-title">{{ desk.name }}</h4>
                     </router-link>
+                    <button type="button" class="btn btn-danger mt-3">Delete</button>
                 </div>
             </div>
         </div>
