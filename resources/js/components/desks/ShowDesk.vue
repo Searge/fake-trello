@@ -34,7 +34,7 @@ export default {
     data() {
         return {
             name: null,
-            errorred: false,
+            errored: false,
             loading: true,
         };
     },
@@ -54,7 +54,7 @@ export default {
                 })
                 .catch(error => {
                     console.log(error);
-                    this.errorred = true;
+                    this.errored = true;
                 })
                 .finally(() => {
                     this.loading = false;
@@ -69,7 +69,7 @@ export default {
             })
             .catch(error => {
                 console.log(error);
-                this.errorred = true;
+                this.errored = true;
             })
             .finally(() => {
                 this.loading = false;

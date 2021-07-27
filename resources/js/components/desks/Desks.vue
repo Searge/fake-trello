@@ -3,6 +3,32 @@
         <h1>
             Desks
         </h1>
+
+        <form @submit.prevent="addNewDesk">
+            <div class="form-group">
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter Desk Name"
+                    v-model="name"
+                    :class="{ 'is-invalid': $v.name.$error }"
+                />
+                <div class="invalid-feedback" v-if="!$v.name.required">
+                    Field is required
+                </div>
+                <div class="invalid-feedback" v-if="!$v.name.maxLength.max">
+                    Name must have at least
+                    {{ $v.name.$params.maxLength.max }} letters.
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+        <div class="alert alert-danger mt-3" role="alert" v-if="errored">
+            Data request error. <br />
+            {{ errors[0] }}
+        </div>
+
         <div class="row">
             <div class="col-lg-4" v-for="desk in desks" v-bind:key="desk.id">
                 <div class="card mt-3">
@@ -22,9 +48,7 @@
                 </div>
             </div>
         </div>
-        <div class="alert alert-danger" role="alert" v-if="errored">
-            Data request error.
-        </div>
+
         <div class="text-center">
             <div class="spinner-border" role="status" v-if="loading">
                 <span class="sr-only">Loading...</span>
@@ -34,13 +58,17 @@
 </template>
 
 <script>
+import { required, maxLength } from 'vuelidate/lib/validators';
 import axios from 'axios';
+
 export default {
     data() {
         return {
             desks: [],
-            errorred: false,
+            errored: false,
+            errors: [],
             loading: true,
+            name: null,
         };
     },
     mounted() {
@@ -55,7 +83,7 @@ export default {
                 })
                 .catch(error => {
                     console.log(error);
-                    this.errorred = true;
+                    this.errored = true;
                 })
                 .finally(() => {
                     this.loading = false;
@@ -73,12 +101,48 @@ export default {
                     })
                     .catch(error => {
                         console.log(error);
-                        this.errorred = true;
+                        this.errored = true;
                     })
                     .finally(() => {
                         this.loading = false;
                     });
             }
+        },
+        addNewDesk() {
+            this.$v.$touch();
+            if (this.$v.$anyError) {
+                return;
+            }
+            axios
+                .post('/api/v1/desks', {
+                    name: this.name,
+                })
+                .then(response => {
+                    this.name = '';
+                    this.desks = [];
+                    this.getAllDesks();
+                })
+                .catch(error => {
+                    console.log(error.response);
+                    if (error.response.status == 422) {
+                        this.errors = [];
+                        this.errors.push(error.response.data.errors.name[0]);
+                    }
+                    if (error.response.status == 500) {
+                        this.errors = [];
+                        this.errors.push(error.response.data.message);
+                    }
+                    this.errored = true;
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
+    },
+    validations: {
+        name: {
+            required,
+            maxLength: maxLength(64),
         },
     },
 };
