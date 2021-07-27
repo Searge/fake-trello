@@ -12,7 +12,13 @@
                     >
                         <h4 class="card-title">{{ desk.name }}</h4>
                     </router-link>
-                    <button type="button" class="btn btn-danger mt-3">Delete</button>
+                    <button
+                        type="button"
+                        class="btn btn-danger mt-3"
+                        @click="deleteDesk(desk.id)"
+                    >
+                        Delete
+                    </button>
                 </div>
             </div>
         </div>
@@ -38,18 +44,42 @@ export default {
         };
     },
     mounted() {
-        axios
-            .get('/api/v1/desks')
-            .then(response => {
-                this.desks = response.data.data;
-            })
-            .catch(error => {
-                console.log(error);
-                this.errorred = true;
-            })
-            .finally(() => {
-                this.loading = false;
-            });
+        this.getAllDesks();
+    },
+    methods: {
+        getAllDesks() {
+            axios
+                .get('/api/v1/desks')
+                .then(response => {
+                    this.desks = response.data.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.errorred = true;
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
+        deleteDesk(id) {
+            if (confirm('Did you want to delete this?')) {
+                axios
+                    .post('/api/v1/desks/' + id, {
+                        _method: 'DELETE',
+                    })
+                    .then(response => {
+                        this.desks = [];
+                        this.getAllDesks();
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.errorred = true;
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    });
+            }
+        },
     },
 };
 </script>

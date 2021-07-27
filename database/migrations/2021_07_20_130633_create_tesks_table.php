@@ -16,11 +16,11 @@ class CreateTesksTable extends Migration
         Schema::create('tesks', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('card_id')->constrained;
+            $table->foreignId('card_id')->constrained()->onDelete('CASCADE');
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      *
