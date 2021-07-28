@@ -15,6 +15,6 @@ class DeskList extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name', 'desk_id',
     ];
 }
