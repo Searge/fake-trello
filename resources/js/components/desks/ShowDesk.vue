@@ -1,6 +1,7 @@
 <template>
     <div class="continer">
         <h1>{{ name }}</h1>
+        <!-- Desk Title Edit -->
         <div class="form-group">
             <input
                 type="text"
@@ -18,6 +19,7 @@
             </div>
         </div>
 
+        <!-- Add New List Form-->
         <form @submit.prevent="addNewDeskList">
             <div class="form-group">
                 <input
@@ -49,6 +51,7 @@
             Data request error.
         </div>
 
+        <!-- List Item Template -->
         <div class="row">
             <div
                 class="col-lg-4"
@@ -126,6 +129,7 @@
             </div>
         </div>
 
+        <!-- Spinner -->
         <div class="text-center">
             <div class="spinner-border" role="status" v-if="loading">
                 <span class="sr-only">Loading...</span>
@@ -149,23 +153,6 @@ export default {
         };
     },
     methods: {
-        updateDeskList(id, name) {
-            axios
-                .post('/api/v1/desk-lists/' + id, {
-                    _method: 'PUT',
-                    name,
-                })
-                .then(response => {
-                    this.desk_list_input_id = null;
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.errored = true;
-                })
-                .finally(() => {
-                    this.loading = false;
-                });
-        },
         getDeskLists() {
             axios
                 .get('/api/v1/desk-lists/', {
@@ -238,6 +225,23 @@ export default {
                 })
                 .catch(error => {
                     console.log(error.response);
+                    this.errored = true;
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
+        updateDeskList(id, name) {
+            axios
+                .post('/api/v1/desk-lists/' + id, {
+                    _method: 'PUT',
+                    name,
+                })
+                .then(response => {
+                    this.desk_list_input_id = null;
+                })
+                .catch(error => {
+                    console.log(error);
                     this.errored = true;
                 })
                 .finally(() => {
