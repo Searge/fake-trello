@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Card extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'name'
+        'name',
+        'desk_list_id'
     ];
 }
