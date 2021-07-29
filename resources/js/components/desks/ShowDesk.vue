@@ -56,17 +56,65 @@
                 v-bind:key="desk_list.id"
             >
                 <div class="card mt-3">
-                    <a href="#" class="card-body">
-                        <h4 class="card-title">{{ desk_list.name }}</h4>
-                    </a>
-                    <router-link
+                    <div class="card-body">
+                        <!-- List Title Edit -->
+                        <form
+                            @submit.prevent="
+                                updateDeskList(desk_list.id, desk_list.name)
+                            "
+                            v-if="desk_list_input_id == desk_list.id"
+                            class="input-group mb-3"
+                        >
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Enter List Name"
+                                v-model="desk_list.name"
+                            />
+                            <div class="input-group-append">
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-secondary close"
+                                    aria-label="Close"
+                                    @click="desk_list_input_id = null"
+                                >
+                                    <span aria-hidden="true"
+                                        >&nbsp;&times;&nbsp;</span
+                                    >
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- List Title -->
+                        <h4
+                            class="card-title d-flex justify-content-between align-items-center edit"
+                            @click="desk_list_input_id = desk_list.id"
+                            v-else
+                        >
+                            {{ desk_list.name }}
+
+                            <!-- Icon -->
+                            <svg
+                                class="edit__icon"
+                                role="img"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 512 512"
+                            >
+                                <path
+                                    fill="currentColor"
+                                    d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"
+                                ></path>
+                            </svg>
+                        </h4>
+                    </div>
+                    <!-- <router-link
                         class="card-body"
                         :to="{
                             name: 'showDesk',
                             params: { deskId: desk_list.id },
                         }"
                     >
-                    </router-link>
+                    </router-link> -->
                     <button
                         type="button"
                         class="btn btn-danger mt-3"
@@ -97,9 +145,27 @@ export default {
             loading: true,
             desk_lists: true,
             desk_list_name: null,
+            desk_list_input_id: null,
         };
     },
     methods: {
+        updateDeskList(id, name) {
+            axios
+                .post('/api/v1/desk-lists/' + id, {
+                    _method: 'PUT',
+                    name,
+                })
+                .then(response => {
+                    this.desk_list_input_id = null;
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.errored = true;
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
         getDeskLists() {
             axios
                 .get('/api/v1/desk-lists/', {
@@ -117,8 +183,8 @@ export default {
                 });
         },
         saveName() {
-            this.$v.$touch();
-            if (this.$v.$anyError) {
+            this.$v.name.$touch();
+            if (this.$v.name.$anyError) {
                 return;
             }
             axios
