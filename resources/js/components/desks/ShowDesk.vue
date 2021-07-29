@@ -4,12 +4,13 @@
         <!-- Desk Title Edit -->
         <div class="form-group">
             <input
-                type="text"
-                @blur="saveName"
                 v-model="name"
+                @blur="saveName"
                 class="form-control"
                 :class="{ 'is-invalid': $v.name.$error }"
+                type="text"
             />
+
             <div class="invalid-feedback" v-if="!$v.name.required">
                 Field is required
             </div>
@@ -22,33 +23,38 @@
         <!-- Add New List Form-->
         <form @submit.prevent="addNewDeskList">
             <div class="form-group">
-                <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Enter List Name"
-                    v-model="desk_list_name"
-                    :class="{ 'is-invalid': $v.desk_list_name.$error }"
-                />
-                <div
-                    class="invalid-feedback"
-                    v-if="!$v.desk_list_name.required"
-                >
-                    Field is required
-                </div>
-                <div
-                    class="invalid-feedback"
-                    v-if="!$v.desk_list_name.maxLength.max"
-                >
-                    Name must have at least
-                    {{ $v.desk_list_name.$params.maxLength.max }} letters.
+                <div class="input-group mb-3">
+                    <input
+                        v-model="desk_list_name"
+                        :class="{ 'is-invalid': $v.desk_list_name.$error }"
+                        class="form-control"
+                        placeholder="Enter List Name"
+                        type="text"
+                    />
+                    <button type="submit" class="btn btn-primary">
+                        Add List
+                    </button>
+                    <div
+                        class="invalid-feedback"
+                        v-if="!$v.desk_list_name.required"
+                    >
+                        Field is required
+                    </div>
+                    <div
+                        class="invalid-feedback"
+                        v-if="!$v.desk_list_name.maxLength.max"
+                    >
+                        Name must have at least
+                        {{ $v.desk_list_name.$params.maxLength.max }} letters.
+                    </div>
                 </div>
             </div>
-
-            <button type="submit" class="btn btn-primary">Add List</button>
         </form>
 
         <div class="alert alert-danger mt-3" role="alert" v-if="errored">
             Data request error.
+            <br />
+            {{ errors[0] }}
         </div>
 
         <!-- List Item Template -->
@@ -146,6 +152,7 @@ export default {
         return {
             name: null,
             errored: false,
+            errors: [],
             loading: true,
             desk_lists: true,
             desk_list_name: null,
@@ -180,10 +187,15 @@ export default {
                     name: this.name,
                 })
                 .then(response => {
+                    console.log(this.deskId, response);
                     // this.name = response.data.data.name;
                 })
                 .catch(error => {
-                    console.log(error);
+                    console.log(error.response);
+                    if (error.response.status == 500) {
+                        this.errors = [];
+                        this.errors.push(error.response.data.message);
+                    }
                     this.errored = true;
                 })
                 .finally(() => {
