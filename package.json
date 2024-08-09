@@ -26,7 +26,7 @@
     "dependencies": {
         "svg-url-loader": "^7.1.1",
 
-        "vue": "^3.4.31",
+        "vue": "^3.4.33",
         "vue-axios": "^3.5.2",
         "vue-router": "^3.5.1",
 
