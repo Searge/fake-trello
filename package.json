@@ -24,7 +24,7 @@
         "vue-template-compiler": "^2.6.14"
     },
     "dependencies": {
-        "svg-url-loader": "^7.1.1",
+        "svg-url-loader": "^8.0.0",
 
         "vue": "^3.4.33",
         "vue-axios": "^3.5.2",
